@@ -1,0 +1,19 @@
+[
+  {
+    "deviceId": "device-z4kfj9eq",
+    "latitude": -1.2910592,
+    "longitude": 36.8050176,
+    "date": "2025-10-21",
+    "time": "12:04:13 PM",
+    "ip": "::1"
+  },
+  {
+    "name": "Brian Gichobi",
+    "deviceId": "device-z4kfj9eq",
+    "latitude": -1.2912008,
+    "longitude": 36.8115581,
+    "date": "2025-10-24",
+    "time": "10:55:54 AM",
+    "ip": "::1"
+  }
+]

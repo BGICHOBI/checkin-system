@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team Check-In</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 320px;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    input {
+      width: 90%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .msg {
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Team Check-In</h2>
+    <input type="text" id="username" placeholder="Enter your name" />
+    <button id="checkinBtn">Check In</button>
+    <div class="msg" id="message"></div>
+  </div>
+
+  <script>
+    const backendURL = "http://localhost:3000/checkin"; // change when deployed
+
+    document.getElementById("checkinBtn").addEventListener("click", async () => {
+      const username = document.getElementById("username").value.trim();
+      const messageDiv = document.getElementById("message");
+
+      if (!username) {
+        messageDiv.textContent = "Please enter your name.";
+        messageDiv.style.color = "red";
+        return;
+      }
+
+      messageDiv.textContent = "Submitting...";
+      messageDiv.style.color = "black";
+
+      try {
+        const response = await fetch(backendURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          messageDiv.textContent = data.message;
+          messageDiv.style.color = "green";
+        } else {
+          messageDiv.textContent = data.message || "Error checking in.";
+          messageDiv.style.color = "red";
+        }
+      } catch (error) {
+        console.error(error);
+        messageDiv.textContent = "Connection error. Try again.";
+        messageDiv.style.color = "red";
+      }
+    });
+  </script>
+</body>
+</html>
