@@ -15,5 +15,23 @@
     "date": "2025-10-24",
     "time": "10:55:54 AM",
     "ip": "::1"
+  },
+  {
+    "name": "Brian Gichobi",
+    "deviceId": "device-z4kfj9eq",
+    "latitude": -1.2910592,
+    "longitude": 36.8115712,
+    "date": "2025-10-27",
+    "time": "8:04:39 AM",
+    "ip": "::1"
+  },
+  {
+    "name": "Brian Gichobi",
+    "deviceId": "device-z4kfj9eq",
+    "latitude": -1.2910592,
+    "longitude": 36.8082944,
+    "date": "2025-10-28",
+    "time": "9:14:28 AM",
+    "ip": "::1"
   }
 ]
