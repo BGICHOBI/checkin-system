@@ -1,6 +1,10 @@
 // server.js
 import express from "express";
 import cors from "cors";
+app.use(cors({
+  origin: "https://checkin.emtechhouse.co.ke", // frontend domain
+  methods: ["GET", "POST"],
+}));
 import bodyParser from "body-parser";
 import fs from "fs";
 import path from "path";
@@ -8,20 +12,15 @@ import XLSX from "xlsx";
 import nodemailer from "nodemailer";
 import cron from "node-cron";
 
+
 const app = express();
-const PORT = process.env.PORT || 9575; // match your deployment port
+const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(process.cwd(), "checkins.json");
 const CSV_FILE = "checkins.csv";
 const EXCEL_FILE = "checkins.xlsx";
 
-// ✅ CORS setup (allow only your deployed frontend)
-app.use(cors({
-  origin: "https://checkin.emtechhouse.co.ke", // your deployed frontend domain
-  methods: ["GET", "POST"],
-}));
-
+app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public"));
 
 // --- Load existing check-ins ---
 let checkins = [];
@@ -56,7 +55,7 @@ const transporter = nodemailer.createTransport({
   secure: false,
   auth: {
     user: "bgichobi@emtechhouse.co.ke", // sender
-    pass: "Emtech@123", // ⚠️ for security, move this to .env in production
+    pass: "Emtech@123", // replace with real or app password
   },
   tls: { rejectUnauthorized: false },
 });
@@ -144,5 +143,5 @@ app.get("/checkins", (req, res) => {
 
 // --- Start server ---
 app.listen(PORT, () =>
-  console.log(`✅ Check-in API running on https://checkin.emtechhouse.co.ke:${PORT}`)
+  console.log(`✅ Check-in API running on http://localhost:${PORT}`)
 );

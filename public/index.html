@@ -164,7 +164,7 @@
         const longitude = pos.coords.longitude;
 
         try {
-          const res = await fetch("http://localhost:3000/checkin", {
+          const res = await fetch("https://checkin.emtechhouse.co.ke:9575/checkin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, latitude, longitude, deviceId })
