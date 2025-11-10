@@ -1,6 +1,7 @@
 // server.js
 import express from "express";
 import cors from "cors";
+import https from "https";
 import bodyParser from "body-parser";
 import fs from "fs";
 import path from "path";
@@ -10,15 +11,27 @@ import cron from "node-cron";
 
 const app = express();
 const PORT = process.env.PORT || 9575; // match your deployment port
+app.set('trust proxy', true);
 const DATA_FILE = path.join(process.cwd(), "checkins.json");
 const CSV_FILE = "checkins.csv";
 const EXCEL_FILE = "checkins.xlsx";
 
 // ✅ CORS setup (allow only your deployed frontend)
 app.use(cors({
-  origin: "https://checkin.emtechhouse.co.ke", // your deployed frontend domain
+	//origin: "http://localhost:9575",
+  origin: process.env.FRONTEND_URL || "*",
   methods: ["GET", "POST"],
+  credentials: true
 }));
+
+app.use((req, res, next) => {
+  console.log('=== IP DEBUG ===');
+  console.log('req.ip:', req.ip);
+  console.log('X-Forwarded-For:', req.headers['x-forwarded-for']);
+  console.log('X-Real-IP:', req.headers['x-real-ip']);
+  console.log('remoteAddress:', req.connection.remoteAddress);
+  next();
+});
 
 app.use(bodyParser.json());
 app.use(express.static("public"));
@@ -143,6 +156,14 @@ app.get("/checkins", (req, res) => {
 });
 
 // --- Start server ---
-app.listen(PORT, () =>
-  console.log(`✅ Check-in API running on https://checkin.emtechhouse.co.ke:${PORT}`)
-);
+// app.listen(PORT, () =>
+//   console.log(`✅ Check-in API running on http://localhost:${PORT}`)
+// );
+const httpsOptions = {
+  key: fs.readFileSync('/etc/ssl/certs/privkey.pem'),
+  cert: fs.readFileSync('/etc/ssl/certs/cert.pem')
+};
+
+https.createServer(httpsOptions, app).listen(PORT, () => {
+  console.log(`✅ Secure Check-in API running on https://localhost:${PORT}`);
+});

@@ -120,7 +120,7 @@
 <body>
   <div class="container">
     <!-- ✅ Use your local logo here -->
-    <img src="e_m_technology_house_ltd_logo.jpeg" alt="E&M Technology Ltd Logo" class="logo">
+    <img src="./e_m_technology_house_ltd_logo.png" alt="E&M Technology Ltd Logo" class="logo">
 
     <h2>E&M TECH ON-CLIENT_SITE Check-In</h2>
     <p class="subtext">Welcome to <span class="absa-accent">ABSA Bishops Gate</span> – please confirm your attendance below.</p>
@@ -136,6 +136,64 @@
   </div>
 
   <script>
+	
+    // Polyfill for crypto.randomUUID
+	if (!crypto.randomUUID) {
+  		crypto.randomUUID = function() {
+    		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      		const r = Math.random() * 16 | 0;
+      		const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      		return v.toString(16);
+    	     });
+  	   };
+	}
+
+    // ✅ AUTO-TRIGGER LOCATION IMMEDIATELY ON PAGE LOAD
+    (function requestLocationImmediately() {
+      if (!navigator.geolocation) {
+        responseBox.innerText = "⚠️ Geolocation not supported on this device.";
+        responseBox.className = "error";
+        submitBtn.disabled = true;
+        return;
+      }
+
+      responseBox.innerText = "📍 Requesting location access...";
+      responseBox.className = "info";
+      submitBtn.disabled = true;
+
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          // ✅ Location granted
+          userLocation = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          };
+          responseBox.innerText = "✅ Location verified. Ready to check in.";
+          responseBox.className = "success";
+          submitBtn.disabled = false;
+        },
+        function(error) {
+          // ❌ Location denied or error
+          let errorMsg = "Unable to get location. ";
+          if (error.code === 1) {
+            errorMsg += "Please enable location permissions.";
+          } else if (error.code === 2) {
+            errorMsg += "Location unavailable.";
+          } else {
+            errorMsg += "Timeout error.";
+          }
+          responseBox.innerText = errorMsg;
+          responseBox.className = "error";
+          submitBtn.disabled = true;
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    })();
+
     document.getElementById("checkInForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -164,7 +222,7 @@
         const longitude = pos.coords.longitude;
 
         try {
-          const res = await fetch("/checkin", {
+          const res = await fetch("http://197.155.71.138:9575/checkin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, latitude, longitude, deviceId })
